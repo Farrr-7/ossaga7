@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Resmi & Dashboard Admin OSIS SMKN 1 Purbalingga (SMEGA)</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            electric: {
+              DEFAULT: '#1842FF',
+              light: '#3D63FF',
+              dark: '#0C2BBF',
+              50: '#EEF2FF',
+              100: '#E0E7FF',
+            },
+            lime: {
+              DEFAULT: '#D4FF00',
+              neon: '#CCFF00',
+              soft: '#E8FFA6',
+              dark: '#9AC200',
+            },
+            editorial: {
+              bg: '#F4F6FC',
+              card: '#FFFFFF',
+              dark: '#0A0E23',
+            }
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+            display: ['Syne', 'Plus Jakarta Sans', 'sans-serif'],
+          },
+          boxShadow: {
+            'pop': '0 16px 40px -8px rgba(24, 66, 255, 0.28)',
+            'lime-glow': '0 12px 35px -5px rgba(212, 255, 0, 0.5)',
+            'card-overlap': '0 25px 50px -12px rgba(10, 14, 35, 0.12)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- React 18 & Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { background-color: #F4F6FC; color: #0A0E23; overflow-x: hidden; }
+    .font-display { font-family: 'Syne', sans-serif; }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+    .rounded-blob { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+    @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
+    .animate-marquee { display: flex; width: max-content; animation: marquee 24s linear infinite; }
+  </style>
+</head>
+<body class="selection:bg-lime selection:text-slate-950">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const LOCAL_KEY = 'smega_osis_v2_stored';
+
+    // Default Seed Data
+    const defaultData = {
+      osisInfo: {
+        namaSekolah: "SMKN 1 PURBALINGGA",
+        singkatanSekolah: "SMEGA",
+        namaKabinet: "KABINET ADYATAMA",
+        periode: "2026/2027",
+        tagline: "Bersama Bergerak, Berkarya, dan Berdampak.",
+        tentangSingkat: "OSIS SMKN 1 Purbalingga merupakan wadah bagi siswa untuk belajar berorganisasi, mengembangkan kreativitas, membangun kepemimpinan, serta berkontribusi dalam berbagai kegiatan sekolah.",
+        tentangLengkap: "OSIS hadir sebagai ruang bagi siswa untuk berkolaborasi, menyampaikan aspirasi, mengembangkan potensi, dan menciptakan kegiatan yang positif bagi lingkungan sekolah. Melalui berbagai program dan kegiatan, pengurus OSIS belajar tentang kepemimpinan, tanggung jawab, komunikasi, kreativitas, dan kerja sama.",
+        sejarah: "SMKN 1 Purbalingga berakar dari sejarah panjang sebagai SMEA Negeri Purbalingga yang telah melahirkan ribuan alumni unggul dan profesional. Kini, dengan berbagai konsentrasi keahlian vokasi (RPL, AKL, Manajemen Perkantoran, Pemasaran, dan DKV), OSIS SMEGA terus bertransformasi menjadi organisasi siswa yang progresif.",
+        alamat: "Jl. Mayor Jend. Sungkono No. 34, Selabaya, Kec. Kalimanah, Kabupaten Purbalingga, Jawa Tengah 53371",
+        kontak: {
+          whatsapp: "+62 812-2890-1926",
+          email: "osis@smkn1purbalingga.sch.id",
+          websiteSekolah: "https://smkn1purbalingga.sch.id",
+          instagram: "@osissmega_pbg"
+        },
+        stats: { pengurus: 30, sekbid: 10, ide: "∞", family: 1 },
+        nilaiUtama: [
+          { title: "LEADERSHIP", desc: "Memimpin dengan tanggung jawab." },
+          { title: "COLLABORATION", desc: "Bekerja bersama untuk mencapai tujuan." },
+          { title: "CREATIVITY", desc: "Menghadirkan ide dan kegiatan yang inovatif." },
+          { title: "RESPONSIBILITY", desc: "Menjalankan amanah dengan penuh komitmen." }
+        ],
+        visi: "“Menjadikan OSIS sebagai wadah siswa yang aktif, kreatif, berintegritas, dan mampu memberikan dampak positif bagi sekolah.”",
+        misi: [
+          "Membangun kepengurusan yang solid dan bertanggung jawab.",
+          "Menampung serta menyalurkan aspirasi siswa.",
+          "Mengembangkan kreativitas dan potensi siswa.",
+          "Menciptakan kegiatan yang edukatif, positif, dan menarik.",
+          "Meningkatkan rasa kebersamaan seluruh warga sekolah."
+        ]
+      },
+      pengurusList: [
+        { id: 1, nama: "M. Rizky Pratama", kelas: "XI RPL 1", sekbidCode: "BPH", jabatan: "Ketua OSIS", foto: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80", quote: "Pemimpin yang baik adalah mereka yang merangkul keberagaman.", instagram: "@rizky.prtm" },
+        { id: 2, nama: "Anindya Putri Kirana", kelas: "XI AKL 2", sekbidCode: "BPH", jabatan: "Wakil Ketua OSIS", foto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80", quote: "Bersama kita belajar, berkreasi, dan saling melengkapi.", instagram: "@anindyakrn" },
+        { id: 3, nama: "Dina Aulia Rahma", kelas: "XI MP 1", sekbidCode: "BPH", jabatan: "Sekretaris 1", foto: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80", quote: "Ketelitian adalah cermin profesionalisme berorganisasi.", instagram: "@dinaauliar" },
+        { id: 4, nama: "Fajar Bayu Saputra", kelas: "XI RPL 2", sekbidCode: "BPH", jabatan: "Sekretaris 2", foto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80", quote: "Setiap jejak kegiatan adalah sejarah yang layak dicatat.", instagram: "@fajarbayu.s" },
+        { id: 5, nama: "Nabila Zahra Syahrani", kelas: "XI AKL 1", sekbidCode: "BPH", jabatan: "Bendahara 1", foto: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80", quote: "Transparansi adalah pondasi utama kepercayaan.", instagram: "@nabilazhr" },
+        { id: 6, nama: "Bima Aditia Nugroho", kelas: "XI PM 2", sekbidCode: "BPH", jabatan: "Bendahara 2", foto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80", quote: "Mengoptimalkan setiap rupiah anggaran untuk siswa.", instagram: "@bima.aditia" },
+        { id: 7, nama: "Ahmad Nur Faizi", kelas: "XI RPL 1", sekbidCode: "SEKBID 01", jabatan: "Koord. Sekbid 1", foto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80", quote: "Menjaga nilai spiritualitas di tengah kemajuan zaman.", instagram: "@ahmadfaizi" },
+        { id: 8, nama: "Nurul Hidayah", kelas: "X AKL 3", sekbidCode: "SEKBID 01", jabatan: "Anggota Sekbid 1", foto: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80", quote: "Kebaikan kecil istiqomah membawa berkah.", instagram: "@nurulhdh" },
+        { id: 9, nama: "Satria Bagus Wicaksono", kelas: "XI MP 2", sekbidCode: "SEKBID 02", jabatan: "Koord. Sekbid 2", foto: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80", quote: "Disiplin adalah jalan tercepat menuju kemandirian.", instagram: "@satriabagus" },
+        { id: 10, nama: "Tika Anggraini", kelas: "X DKV 1", sekbidCode: "SEKBID 02", jabatan: "Anggota Sekbid 2", foto: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80", quote: "Cinta tanah air diwujudkan melalui karya nyata.", instagram: "@tika.anggr" },
+        { id: 11, nama: "Rian Kurniawan", kelas: "XI RPL 2", sekbidCode: "SEKBID 03", jabatan: "Koord. Sekbid 3", foto: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=600&q=80", quote: "Prestasi lahir dari latihan dan keberanian.", instagram: "@riankurnia" },
+        { id: 12, nama: "Siti Rahmawati", kelas: "X AKL 1", sekbidCode: "SEKBID 03", jabatan: "Anggota Sekbid 3", foto: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=600&q=80", quote: "Bakat yang diasah akan membanggakan sekolah.", instagram: "@sitirahma" },
+        { id: 13, nama: "Galang Aditya", kelas: "XI RPL 2", sekbidCode: "SEKBID 04", jabatan: "Koord. Sekbid 4", foto: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=600&q=80", quote: "Demokrasi sekolah adalah bekal pemimpin bangsa.", instagram: "@galang.adit" },
+        { id: 14, nama: "Devi Anggita Putri", kelas: "X MP 2", sekbidCode: "SEKBID 04", jabatan: "Anggota Sekbid 4", foto: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=600&q=80", quote: "Suara setiap siswa berharga untuk keadilan bersama.", instagram: "@devianggita" },
+        { id: 15, nama: "Aldo Firmansyah", kelas: "XI PM 1", sekbidCode: "SEKBID 05", jabatan: "Koord. Sekbid 5", foto: "https://images.unsplash.com/photo-1531891437562-4301cf35b7e4?auto=format&fit=crop&w=600&q=80", quote: "Melihat peluang di setiap tantangan wirausaha.", instagram: "@aldo.firm" },
+        { id: 16, nama: "Karin Novita", kelas: "X PM 2", sekbidCode: "SEKBID 05", jabatan: "Anggota Sekbid 5", foto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80", quote: "Kreativitas produk siswa SMK bernilai nyata.", instagram: "@karinnovita" },
+        { id: 17, nama: "Bagas Dwi Cahyo", kelas: "XI RPL 1", sekbidCode: "SEKBID 06", jabatan: "Koord. Sekbid 6", foto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80", quote: "Tubuh bugar melahirkan pikiran jernih.", instagram: "@bagas.dwi" },
+        { id: 18, nama: "Laras Wulandari", kelas: "X AKL 2", sekbidCode: "SEKBID 06", jabatan: "Anggota Sekbid 6", foto: "https://images.unsplash.com/photo-1548142813-c348350df52b?auto=format&fit=crop&w=600&q=80", quote: "Pola hidup sehat adalah investasi terbaik.", instagram: "@laraswulan" },
+        { id: 19, nama: "Dimas Panji Wicaksono", kelas: "XI DKV 1", sekbidCode: "SEKBID 07", jabatan: "Koord. Sekbid 7", foto: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80", quote: "Seni dan budaya adalah jati diri luhur.", instagram: "@dimaspanji" },
+        { id: 20, nama: "Cindy Ayu Lestari", kelas: "X MP 1", sekbidCode: "SEKBID 07", jabatan: "Anggota Sekbid 7", foto: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80", quote: "Mengekspresikan rasa lewat karya seni bermakna.", instagram: "@cindyayu" },
+        { id: 21, nama: "Kevin Alamsyah", kelas: "XI RPL 1", sekbidCode: "SEKBID 08", jabatan: "Koord. Sekbid 8", foto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80", quote: "Teknologi memperluas jangkauan kebaikan bersama.", instagram: "@kevinalam" },
+        { id: 22, nama: "Tiara Melani", kelas: "X DKV 2", sekbidCode: "SEKBID 08", jabatan: "Anggota Sekbid 8", foto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80", quote: "Desain visual menyampaikan pesan dengan kuat.", instagram: "@tiaramelani" },
+        { id: 23, nama: "Arif Hidayatullah", kelas: "XI MP 1", sekbidCode: "SEKBID 09", jabatan: "Koord. Sekbid 9", foto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80", quote: "Language connects ideas across borders.", instagram: "@arifhidayat" },
+        { id: 24, nama: "Nadia Safitri", kelas: "X AKL 2", sekbidCode: "SEKBID 09", jabatan: "Anggota Sekbid 9", foto: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80", quote: "Percaya diri berkomunikasi global.", instagram: "@nadiasafitri" },
+        { id: 25, nama: "Fauzan Ramadhan", kelas: "XI RPL 2", sekbidCode: "SEKBID 10", jabatan: "Koord. Sekbid 10", foto: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=600&q=80", quote: "Sekolah asri adalah rumah kedua yang nyaman.", instagram: "@fauzanrmd" },
+        { id: 26, nama: "Salma Putri Utami", kelas: "X PM 1", sekbidCode: "SEKBID 10", jabatan: "Anggota Sekbid 10", foto: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80", quote: "Peduli lingkungan dimulai dari meja sendiri.", instagram: "@salmaputri" },
+        { id: 27, nama: "Hendra Setiawan", kelas: "XI RPL 1", sekbidCode: "SEKBID 08", jabatan: "Spesialis Audio & Dokumentasi", foto: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80", quote: "Merekam momen terbaik kegiatan sekolah.", instagram: "@hendraset" },
+        { id: 28, nama: "Ayu Wulandari", kelas: "XI MP 2", sekbidCode: "SEKBID 02", jabatan: "Protokoler & Humas", foto: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80", quote: "Komunikasi santun menjembatani perbedaan.", instagram: "@ayuwulan" },
+        { id: 29, nama: "Gilang Permana", kelas: "XI PM 2", sekbidCode: "SEKBID 06", jabatan: "Logistik & Perlengkapan", foto: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=600&q=80", quote: "Kerja keras di balik layar adalah kunci sukses acara.", instagram: "@gilangperm" },
+        { id: 30, nama: "Rara Anasthasya", kelas: "X DKV 1", sekbidCode: "SEKBID 08", jabatan: "Spesialis Desain & Mading", foto: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=600&q=80", quote: "Visual ceria membawa energi positif.", instagram: "@rara.anasth" },
+      ],
+      programKerjaList: [
+        { id: 1, nama: "Pilketos Daring Berbasis Web SMEGA", sekbid: "Sekbid 04", tanggal: "September 2026", lokasi: "Lab Komputer & Smartphone", status: "COMPLETED", deskripsi: "Pesta demokrasi siswa secara online dan transparan memanfaatkan website sekolah dengan 1.495 siswa dan 105 guru." },
+        { id: 2, nama: "Masa Pengenalan Lingkungan Sekolah (MPLS)", sekbid: "BPH & Sekbid", tanggal: "Juli 2026", lokasi: "Aula Utama & Lapangan", status: "COMPLETED", deskripsi: "Penyambutan siswa baru tanpa perundungan, pengenalan jurusan vokasi, dan tata tertib sekolah." },
+        { id: 3, nama: "Class Meeting & Pekan Olahraga Antarkelas", sekbid: "Sekbid 03 & Sekbid 06", tanggal: "15 - 19 Desember 2026", lokasi: "GOR & Lapangan SMEGA", status: "ONGOING", deskripsi: "Ajang penyegaran setelah penilaian akhir semester dengan turnamen futsal, voli, dan e-sport antarkelas." },
+        { id: 4, nama: "Bulan Bahasa & Gebyar Vokasi Kreatif", sekbid: "Sekbid 07, 08, 09", tanggal: "27 - 28 Oktober 2026", lokasi: "Panggung Utama SMEGA", status: "COMPLETED", deskripsi: "Parade sastra nusantara, lomba debat bahasa asing, serta pameran karya desain siswa DKV." },
+        { id: 5, nama: "SMEGA Peduli Lingkungan & Gerakan Bank Sampah", sekbid: "Sekbid 10", tanggal: "Setiap Pekan (Rutin)", lokasi: "Area Kampus SMKN 1", status: "ONGOING", deskripsi: "Program pemilahan sampah organik dan plastik tiap kelas yang ditimbang menjadi kas kelas ramah lingkungan." },
+        { id: 6, nama: "Latihan Dasar Kepemimpinan Siswa (LDKS)", sekbid: "BPH & Sekbid 02", tanggal: "08 - 10 Januari 2027", lokasi: "Pusat Karakter Pelajar", status: "PLANNED", deskripsi: "Pelatihan kepemimpinan, kepribadian unggul, dan simulasi advokasi siswa bagi pengurus OSIS baru." },
+      ],
+      agendaList: [
+        { id: 1, judul: "Masa Pengenalan Lingkungan Sekolah (MPLS)", kategori: "MPLS", tanggal: "15 - 17 Juli 2026", lokasi: "Aula & Lapangan", deskripsi: "Masa pengenalan lingkungan sekolah, wawasan jurusan vokasi, dan deklarasi anti kekerasan.", badge: "MPLS" },
+        { id: 2, judul: "Pemilihan Ketua OSIS Daring (Pilketos)", kategori: "Organisasi", tanggal: "24 September 2026", lokasi: "Website E-Voting", deskripsi: "Demokrasi digital e-voting melibatkan 1.495 siswa dan 105 guru/karyawan.", badge: "EVENT SEKOLAH" },
+        { id: 3, judul: "Bulan Bahasa & Festival Sastra", kategori: "HARI BESAR NASIONAL", tanggal: "28 Oktober 2026", lokasi: "Panggung Utama", deskripsi: "Peringatan Sumpah Pemuda dengan lomba monolog, puisi, dan pidato 3 bahasa.", badge: "HARI BESAR NASIONAL" },
+        { id: 4, judul: "Class Meeting Pasca Penilaian Semester", kategori: "CLASS MEETING", tanggal: "15 - 19 Desember 2026", lokasi: "GOR & Lapangan", deskripsi: "Kegiatan setelah penilaian semester berupa kompetisi olahraga dan pentas antarkelas.", badge: "CLASS MEETING" },
+      ],
+      beritaList: [
+        { id: 1, judul: "Pilketos Daring SMKN 1 Purbalingga Latih Nilai Demokratis dengan Teknologi", kategori: "Organisasi", tanggal: "21 Oktober 2026", ringkasan: "Memanfaatkan website sekolah, pemilihan ketua OSIS diselenggarakan daring melibatkan 1.495 siswa dan 105 guru serta karyawan.", foto: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1000&q=80" },
+        { id: 2, judul: "Antusiasme Class Meeting 2026: Rekatkan Persaudaraan Pasca Ujian", kategori: "Kegiatan OSIS", tanggal: "15 Oktober 2026", ringkasan: "Pertandingan olahraga persahabatan dan e-sport antarkelas sukses mencairkan suasana setelah sepekan ujian semester.", foto: "https://images.unsplash.com/photo-1526676037777-05a232554f77?auto=format&fit=crop&w=1000&q=80" },
+        { id: 3, judul: "Gerakan Sekolah Ramah Lingkungan: OSIS Luncurkan Bank Sampah Digital", kategori: "Informasi Siswa", tanggal: "02 Oktober 2026", ringkasan: "Sekbid 10 merilis sistem pemilahan sampah plastik berhadiah saldo belanja koperasi sekolah.", foto: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1000&q=80" },
+      ],
+      galeriList: [
+        { id: 1, judul: "Pentas Seni & Akustik Siswa SMEGA", kategori: "EVENT", tanggal: "28 Okt 2026", foto: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1000&q=80", sticker: "LIVE SHOW 🎸" },
+        { id: 2, judul: "Simulasi Pilketos Daring di Lab Komputer", kategori: "SCHOOL", tanggal: "20 Sep 2026", foto: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1000&q=80", sticker: "DEMOKRASI 🗳️" },
+        { id: 3, judul: "Rapat Pleno Koordinasi Pengurus OSIS", kategori: "MEETING", tanggal: "12 Okt 2026", foto: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1000&q=80", sticker: "COLLABORATION 🤝" },
+        { id: 4, judul: "Aksi Bersih Kampus Ramah Lingkungan", kategori: "SOCIAL", tanggal: "04 Okt 2026", foto: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1000&q=80", sticker: "GREEN CAMPUS 🌿" },
+      ],
+      pengumumanList: [
+        { id: 1, tag: "OPEN REGISTRATION", judul: "Pendaftaran Peserta Kegiatan OSIS & Class Meeting Telah Dibuka", tanggal: "10 Des 2026", isi: "Seluruh ketua kelas diharapkan mendaftarkan perwakilan tim lomba olahraga & e-sport." },
+        { id: 2, tag: "MEETING INFO", judul: "Rapat Koordinasi Pengurus OSIS & Ketua Sekbid", tanggal: "12 Des 2026", isi: "Diundang seluruh pengurus OSIS Masa Bakti 2026/2027 hadir pada rapat evaluasi di Ruang OSIS." },
+        { id: 3, tag: "EVENT UPDATE", judul: "Informasi Terbaru Mengenai Jadwal Kegiatan Sekolah", tanggal: "05 Des 2026", isi: "Simak jadwal rundown class meeting dan penyesuaian agenda semester gasal pada portal ini." }
+      ],
+      aspirasiList: [
+        { id: 1, nama: "Siswa RPL Berbakat", kelas: "XI RPL 2", kategori: "IDE", pesan: "Min, gimana kalau diadakan workshop game development bareng alumni yang udah kerja di industri IT?", likes: 54, status: "DITINDAKLANJUTI", waktu: "3 jam lalu" },
+        { id: 2, nama: "Anak Akuntansi (Anonim)", kelas: "X AKL 1", kategori: "SARAN", pesan: "Tolong min, area parkir timur diperjelas marka barisnya biar pas pulang tetap rapi.", likes: 41, status: "DALAM KAJIAN", waktu: "5 jam lalu" },
+        { id: 3, nama: "Pecinta Seni", kelas: "XI DKV 1", kategori: "KEGIATAN", pesan: "Adain pameran karya seni terpadu tiap akhir semester ya kak!", likes: 67, status: "SELESAI", waktu: "Kemarin" },
+      ]
+    };
+
+    // ==========================================
+    // INDEXEDDB DATABASE LAYER FOR PREVIEW
+    // ==========================================
+    const DB_NAME = 'OSIS_SMEGA_DATABASE';
+    const DB_VERSION = 1;
+
+    function openIDB() {
+      return new Promise((resolve) => {
+        if (!window.indexedDB) {
+          resolve(null);
+          return;
+        }
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains('store')) {
+            db.createObjectStore('store', { keyPath: 'key' });
+          }
+        };
+        req.onsuccess = (e) => resolve(e.target.result);
+        req.onerror = () => resolve(null);
+      });
+    }
+
+    async function loadIDBData() {
+      const db = await openIDB();
+      if (!db) return null;
+      return new Promise((resolve) => {
+        const tx = db.transaction(['store'], 'readonly');
+        const req = tx.objectStore('store').get('appData');
+        req.onsuccess = () => resolve(req.result ? req.result.value : null);
+        req.onerror = () => resolve(null);
+      });
+    }
+
+    async function saveIDBData(data) {
+      const db = await openIDB();
+      if (!db) return;
+      try {
+        const tx = db.transaction(['store'], 'readwrite');
+        tx.objectStore('store').put({ key: 'appData', value: data, updatedAt: new Date().toISOString() });
+      } catch (e) {
+        console.error('IDB save error', e);
+      }
+    }
+
+    async function getIDBAdminAuth() {
+      const db = await openIDB();
+      if (!db) {
+        return JSON.parse(localStorage.getItem('smega_admin_auth') || '{"username":"admin","password":"smega2026"}');
+      }
+      return new Promise((resolve) => {
+        const tx = db.transaction(['store'], 'readonly');
+        const req = tx.objectStore('store').get('auth');
+        req.onsuccess = () => {
+          if (req.result) resolve(req.result.value);
+          else resolve({ username: 'admin', password: 'smega2026' });
+        };
+        req.onerror = () => resolve({ username: 'admin', password: 'smega2026' });
+      });
+    }
+
+    async function saveIDBAdminAuth(authObj) {
+      localStorage.setItem('smega_admin_auth', JSON.stringify(authObj));
+      const db = await openIDB();
+      if (!db) return;
+      try {
+        const tx = db.transaction(['store'], 'readwrite');
+        tx.objectStore('store').put({ key: 'auth', value: authObj });
+      } catch (e) {}
+    }
+
+    function App() {
+      // LocalStorage & IndexedDB data state
+      const [appData, setAppData] = useState(() => {
+        try {
+          const saved = localStorage.getItem(LOCAL_KEY);
+          if (saved) return JSON.parse(saved);
+        } catch (e) {}
+        return defaultData;
+      });
+
+      const [currentPage, setCurrentPage] = useState('home');
+      const [isAspirasiModalOpen, setIsAspirasiModalOpen] = useState(false);
+      const [selectedMember, setSelectedMember] = useState(null);
+      const [selectedImage, setSelectedImage] = useState(null);
+      const [adminTab, setAdminTab] = useState('info');
+      const [toastMsg, setToastMsg] = useState('');
+      const [dbStatus, setDbStatus] = useState('IndexedDB: OSIS_SMEGA_DATABASE');
+
+      // Admin Auth State
+      const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
+        return sessionStorage.getItem('smega_admin_logged') === 'true' || localStorage.getItem('smega_admin_logged') === 'true';
+      });
+      const [adminCreds, setAdminCreds] = useState({ username: 'admin', password: 'smega2026' });
+      const [loginUser, setLoginUser] = useState('');
+      const [loginPass, setLoginPass] = useState('');
+      const [loginError, setLoginError] = useState('');
+      const [showLoginPass, setShowLoginPass] = useState(false);
+
+      // Change Password State
+      const [isChangePassOpen, setIsChangePassOpen] = useState(false);
+      const [oldPassInput, setOldPassInput] = useState('');
+      const [newPassInput, setNewPassInput] = useState('');
+      const [passError, setPassError] = useState('');
+
+      // Load from IndexedDB on startup
+      useEffect(() => {
+        async function init() {
+          const loadedData = await loadIDBData();
+          if (loadedData) {
+            setAppData(loadedData);
+          } else {
+            await saveIDBData(defaultData);
+          }
+          const loadedAuth = await getIDBAdminAuth();
+          if (loadedAuth) {
+            setAdminCreds(loadedAuth);
+          }
+        }
+        init();
+      }, []);
+
+      // Auto-save to both IndexedDB and LocalStorage
+      useEffect(() => {
+        try {
+          localStorage.setItem(LOCAL_KEY, JSON.stringify(appData));
+          saveIDBData(appData);
+        } catch (e) {}
+      }, [appData]);
+
+      useEffect(() => {
+        const handleHash = () => {
+          const hash = window.location.hash.replace('#', '').toLowerCase();
+          const valid = ['home', 'tentang', 'pengurus', 'program', 'agenda', 'berita', 'galeri', 'pengumuman', 'aspirasi', 'kontak', 'admin'];
+          if (valid.includes(hash)) setCurrentPage(hash);
+        };
+        if (window.location.hash) handleHash();
+        window.addEventListener('hashchange', handleHash);
+        return () => window.removeEventListener('hashchange', handleHash);
+      }, []);
+
+      const navigateTo = (page) => {
+        setCurrentPage(page);
+        window.location.hash = page;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const showNotification = (msg) => {
+        setToastMsg(msg);
+        setTimeout(() => setToastMsg(''), 3000);
+      };
+
+      const resetDefault = () => {
+        if (window.confirm('Reset seluruh data ke setelan awal default SMEGA?')) {
+          localStorage.removeItem(LOCAL_KEY);
+          setAppData(defaultData);
+          saveIDBData(defaultData);
+          showNotification('Data telah direset ke setelan awal!');
+          setTimeout(() => window.location.reload(), 600);
+        }
+      };
+
+      const handleLoginSubmit = (e) => {
+        e.preventDefault();
+        setLoginError('');
+        if (
+          loginUser.trim().toLowerCase() === adminCreds.username.toLowerCase() &&
+          loginPass.trim() === adminCreds.password
+        ) {
+          setIsAdminLoggedIn(true);
+          sessionStorage.setItem('smega_admin_logged', 'true');
+          localStorage.setItem('smega_admin_logged', 'true');
+          showNotification('Login Admin Berhasil! Selamat datang di Panel Kontrol OSIS SMEGA.');
+        } else {
+          setLoginError('Username atau kata sandi tidak cocok. Silakan coba lagi.');
+        }
+      };
+
+      const handleAdminLogout = () => {
+        setIsAdminLoggedIn(false);
+        sessionStorage.removeItem('smega_admin_logged');
+        localStorage.removeItem('smega_admin_logged');
+        showNotification('Anda telah keluar dari sesi Admin.');
+        navigateTo('home');
+      };
+
+      const handlePasswordChangeSubmit = async (e) => {
+        e.preventDefault();
+        setPassError('');
+        if (oldPassInput !== adminCreds.password) {
+          setPassError('Kata sandi lama tidak sesuai.');
+          return;
+        }
+        if (!newPassInput || newPassInput.length < 6) {
+          setPassError('Kata sandi baru minimal 6 karakter.');
+          return;
+        }
+
+        const updatedCreds = { ...adminCreds, password: newPassInput };
+        setAdminCreds(updatedCreds);
+        await saveIDBAdminAuth(updatedCreds);
+        setIsChangePassOpen(false);
+        setOldPassInput('');
+        setNewPassInput('');
+        showNotification('Kata sandi admin berhasil diperbarui di database!');
+      };
+
+      const exportJSON = () => {
+        const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup-osis-smega-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        showNotification('Data backup JSON berhasil diunduh!');
+      };
+
+      const navList = [
+        { id: 'home', label: 'BERANDA' },
+        { id: 'tentang', label: 'TENTANG' },
+        { id: 'pengurus', label: 'PENGURUS' },
+        { id: 'program', label: 'PROGRAM' },
+        { id: 'agenda', label: 'AGENDA' },
+        { id: 'berita', label: 'BERITA' },
+        { id: 'galeri', label: 'GALERI' },
+        { id: 'pengumuman', label: 'PENGUMUMAN' },
+        { id: 'kontak', label: 'KONTAK' },
+      ];
+
+      return (
+        <div className="min-h-screen bg-editorial-bg text-slate-900 font-sans flex flex-col justify-between">
+          
+          {/* Toast */}
+          {toastMsg && (
+            <div className="fixed bottom-6 right-6 z-50 bg-slate-950 text-lime px-5 py-3 rounded-2xl border-2 border-lime shadow-2xl font-black text-xs">
+              ✓ {toastMsg}
+            </div>
+          )}
+
+          {/* NAVBAR */}
+          <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-8 py-3.5 transition-all">
+            <div className="max-w-7xl mx-auto flex items-center justify-between">
+              
+              <button
+                onClick={() => navigateTo('home')}
+                className="flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-4 py-2 rounded-full border border-slate-200 shadow-sm hover:scale-105 transition-all text-left"
+              >
+                <div className="w-8 h-8 rounded-full bg-electric flex items-center justify-center text-white font-black text-sm">
+                  <span className="text-lime text-xs">✦</span>
+                </div>
+                <div>
+                  <span className="font-black text-xs sm:text-sm tracking-tight text-slate-900 block leading-tight">
+                    OSIS {appData.osisInfo.singkatanSekolah}
+                  </span>
+                  <span className="text-[9px] font-bold text-slate-400 tracking-wider uppercase block -mt-0.5">
+                    SMKN 1 PURBALINGGA
+                  </span>
+                </div>
+              </button>
+
+              <nav className="hidden xl:flex items-center gap-1 bg-white/90 backdrop-blur-md px-2.5 py-1.5 rounded-full border border-slate-200 shadow-sm">
+                {navList.map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => navigateTo(item.id)}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-black tracking-wider transition-all ${
+                      currentPage === item.id ? 'bg-electric text-lime scale-105 shadow-sm' : 'text-slate-700 hover:text-electric hover:bg-slate-100'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </nav>
+
+              <div className="flex items-center gap-2">
+                {/* Admin button */}
+                <button
+                  onClick={() => navigateTo('admin')}
+                  className={`px-3.5 py-2 rounded-full text-xs font-black transition-all border ${
+                    currentPage === 'admin' ? 'bg-slate-950 text-lime border-slate-950 scale-105' : 'bg-white/90 text-slate-800 border-slate-200 hover:bg-slate-100'
+                  }`}
+                  title="Dashboard Admin"
+                >
+                  ⚙️ ADMIN
+                </button>
+
+                <button
+                  onClick={() => navigateTo('aspirasi')}
+                  className="bg-lime hover:bg-[#c6f000] text-slate-950 font-black text-xs px-4 py-2 rounded-full shadow-lime-glow transition-all hidden sm:flex items-center gap-1.5 border border-slate-900/10 hover:scale-105"
+                >
+                  <span className="w-2 h-2 rounded-full bg-electric animate-ping" />
+                  <span>ASPIRASI ✦</span>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          {/* MAIN VIEW */}
+          <main className="flex-1">
+
+            {/* ======================================================== */}
+            {/* 1. ADMIN GATE: LOGIN OR DASHBOARD */}
+            {/* ======================================================== */}
+            {currentPage === 'admin' && !isAdminLoggedIn && (
+              <div className="pt-32 pb-24 px-4 sm:px-8 max-w-md mx-auto">
+                <div className="bg-white rounded-[38px] p-7 sm:p-10 border-3 border-slate-950 shadow-2xl relative">
+                  
+                  {/* Floating Pill */}
+                  <div className="absolute -top-5 left-8 bg-slate-950 text-lime px-4 py-1.5 rounded-full border-2 border-slate-950 font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-lg">
+                    <span>🔒 PORTAL LOGIN KESISWAAN</span>
+                  </div>
+
+                  <div className="text-center mt-2">
+                    <div className="inline-flex w-16 h-16 rounded-3xl bg-electric items-center justify-center text-lime font-black text-2xl shadow-pop mb-4 border-2 border-slate-950">
+                      🛡️
+                    </div>
+                    <h1 className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
+                      Admin OSIS SMEGA
+                    </h1>
+                    <p className="text-xs text-slate-500 font-semibold mt-1">
+                      Akses terbatas khusus Pengurus BPH & Pembina Kesiswaan SMKN 1 Purbalingga.
+                    </p>
+                  </div>
+
+                  {loginError && (
+                    <div className="mt-4 p-3 rounded-2xl bg-rose-50 border-2 border-rose-400 text-rose-700 text-xs font-bold animate-bounce">
+                      ⚠️ {loginError}
+                    </div>
+                  )}
+
+                  <form onSubmit={handleLoginSubmit} className="mt-6 space-y-4">
+                    <div>
+                      <label className="block text-[11px] font-black uppercase text-slate-800 mb-1">Username Admin</label>
+                      <input
+                        type="text"
+                        required
+                        value={loginUser}
+                        onChange={(e) => setLoginUser(e.target.value)}
+                        placeholder="Masukkan username"
+                        className="w-full p-3 bg-slate-50 border-2 border-slate-900 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between items-center mb-1">
+                        <label className="block text-[11px] font-black uppercase text-slate-800">Kata Sandi</label>
+                      </div>
+                      <div className="relative">
+                        <input
+                          type={showLoginPass ? 'text' : 'password'}
+                          required
+                          value={loginPass}
+                          onChange={(e) => setLoginPass(e.target.value)}
+                          placeholder="Masukkan password admin"
+                          className="w-full p-3 pr-12 bg-slate-50 border-2 border-slate-900 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white outline-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowLoginPass(!showLoginPass)}
+                          className="absolute right-3 top-3 text-xs font-bold text-slate-400 hover:text-slate-900"
+                        >
+                          {showLoginPass ? '🙈' : '👁️'}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs pt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginUser('admin');
+                          setLoginPass(adminCreds.password);
+                          setLoginError('');
+                        }}
+                        className="text-electric font-black hover:underline text-[11px] flex items-center gap-1"
+                      >
+                        ✦ Gunakan Kredensial Bawaan
+                      </button>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full mt-2 bg-electric text-lime font-black text-xs uppercase py-4 rounded-2xl border-2 border-slate-950 shadow-pop hover:scale-[1.02] transition-all"
+                    >
+                      Masuk ke Dashboard Admin →
+                    </button>
+                  </form>
+
+                  <div className="mt-6 pt-5 border-t border-slate-200">
+                    <div className="bg-slate-50 rounded-2xl p-3 border border-slate-200 text-[11px] text-slate-600">
+                      <span className="font-bold text-slate-900 block">Kredensial Default:</span>
+                      User: <code className="bg-white px-1.5 py-0.5 rounded border font-black text-slate-900">admin</code> • Pass: <code className="bg-white px-1.5 py-0.5 rounded border font-black text-slate-900">smega2026</code>
+                    </div>
+
+                    <div className="mt-4 text-center">
+                      <button
+                        onClick={() => navigateTo('home')}
+                        className="text-xs font-bold text-slate-500 hover:text-slate-950"
+                      >
+                        ← Kembali ke Halaman Utama Website
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            )}
+
+            {currentPage === 'admin' && isAdminLoggedIn && (
+              <div className="pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto">
+                <div className="bg-slate-950 text-white rounded-[36px] p-8 border-3 border-slate-950 shadow-2xl mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <span className="bg-lime text-slate-950 text-xs font-black px-3 py-1 rounded-full uppercase">PANEL PENGATURAN KESISWAAN</span>
+                      <span className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[11px] font-black px-3 py-0.5 rounded-full">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                        <span>Database: {dbStatus}</span>
+                      </span>
+                      <span className="text-xs font-bold text-slate-400">• User: <strong className="text-white">{adminCreds.username}</strong></span>
+                    </div>
+                    <h1 className="text-3xl sm:text-4xl font-black text-white mt-1">Dashboard Admin OSIS SMEGA</h1>
+                    <p className="text-xs text-slate-400 mt-1">Seluruh perubahan tersimpan langsung ke IndexedDB database secara persisten.</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={() => navigateTo('home')}
+                      className="bg-white/10 hover:bg-white text-white hover:text-slate-950 text-xs font-black px-3.5 py-2.5 rounded-xl transition-all"
+                    >
+                      Lihat Website 👁️
+                    </button>
+                    <button
+                      onClick={() => setIsChangePassOpen(true)}
+                      className="bg-white/10 hover:bg-white text-white hover:text-slate-950 text-xs font-black px-3.5 py-2.5 rounded-xl transition-all"
+                    >
+                      Ganti Sandi 🔑
+                    </button>
+                    <button
+                      onClick={exportJSON}
+                      className="bg-electric text-lime text-xs font-black px-3.5 py-2.5 rounded-xl border border-white/20 transition-all shadow-pop hover:scale-105"
+                    >
+                      Ekspor DB 💾
+                    </button>
+                    <button
+                      onClick={resetDefault}
+                      className="bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white text-xs font-black px-3 py-2.5 rounded-xl transition-all"
+                    >
+                      Reset ↺
+                    </button>
+                    <button
+                      onClick={handleAdminLogout}
+                      className="bg-rose-600 hover:bg-rose-700 text-white text-xs font-black px-3.5 py-2.5 rounded-xl transition-all shadow-md"
+                    >
+                      Keluar 🚪
+                    </button>
+                  </div>
+                </div>
+
+                {/* Admin Tabs */}
+                <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none">
+                  {[
+                    { id: 'info', label: 'Info & Visi Misi' },
+                    { id: 'pengurus', label: `30 Pengurus (${appData.pengurusList.length})` },
+                    { id: 'proker', label: `Program Kerja (${appData.programKerjaList.length})` },
+                    { id: 'agenda', label: `Agenda (${appData.agendaList.length})` },
+                    { id: 'berita', label: `Berita (${appData.beritaList.length})` },
+                    { id: 'aspirasi', label: `Aspirasi Masuk (${appData.aspirasiList.length})` },
+                  ].map(tab => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setAdminTab(tab.id)}
+                      className={`px-4 py-2 rounded-full text-xs font-black transition-all border-2 flex-shrink-0 ${
+                        adminTab === tab.id ? 'bg-electric text-lime border-slate-950 scale-105' : 'bg-white text-slate-900 border-slate-900'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Tab Info */}
+                {adminTab === 'info' && (
+                  <div className="bg-white rounded-[32px] p-6 sm:p-8 border-3 border-slate-950 shadow-card-overlap space-y-4">
+                    <h3 className="text-xl font-black">Identitas Sekolah & Visi Misi</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-[11px] font-black uppercase mb-1">Nama Sekolah</label>
+                        <input
+                          type="text"
+                          value={appData.osisInfo.namaSekolah}
+                          onChange={(e) => setAppData({ ...appData, osisInfo: { ...appData.osisInfo, namaSekolah: e.target.value } })}
+                          className="w-full text-xs font-bold p-2.5 rounded-xl border-2 border-slate-900 bg-slate-50"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-black uppercase mb-1">Tagline</label>
+                        <input
+                          type="text"
+                          value={appData.osisInfo.tagline}
+                          onChange={(e) => setAppData({ ...appData, osisInfo: { ...appData.osisInfo, tagline: e.target.value } })}
+                          className="w-full text-xs font-bold p-2.5 rounded-xl border-2 border-slate-900 bg-slate-50"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-black uppercase mb-1">Tentang Kami Singkat</label>
+                      <textarea
+                        rows={2}
+                        value={appData.osisInfo.tentangSingkat}
+                        onChange={(e) => setAppData({ ...appData, osisInfo: { ...appData.osisInfo, tentangSingkat: e.target.value } })}
+                        className="w-full text-xs font-bold p-2.5 rounded-xl border-2 border-slate-900 bg-slate-50 resize-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-black uppercase mb-1">Visi OSIS (Vision)</label>
+                      <input
+                        type="text"
+                        value={appData.osisInfo.visi}
+                        onChange={(e) => setAppData({ ...appData, osisInfo: { ...appData.osisInfo, visi: e.target.value } })}
+                        className="w-full text-xs font-bold p-2.5 rounded-xl border-2 border-slate-900 bg-slate-50"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-black uppercase mb-1">Alamat Resmi</label>
+                      <input
+                        type="text"
+                        value={appData.osisInfo.alamat}
+                        onChange={(e) => setAppData({ ...appData, osisInfo: { ...appData.osisInfo, alamat: e.target.value } })}
+                        className="w-full text-xs font-bold p-2.5 rounded-xl border-2 border-slate-900 bg-slate-50"
+                      />
+                    </div>
+
+                    <button
+                      onClick={() => showNotification('Perubahan Info berhasil disimpan ke browser!')}
+                      className="bg-lime text-slate-950 font-black text-xs px-6 py-3 rounded-xl border-2 border-slate-900 shadow-lime-glow"
+                    >
+                      Simpan Perubahan Info ✓
+                    </button>
+                  </div>
+                )}
+
+                {/* Tab Pengurus */}
+                {adminTab === 'pengurus' && (
+                  <div className="bg-white rounded-[32px] p-6 sm:p-8 border-3 border-slate-950 shadow-card-overlap">
+                    <div className="flex justify-between items-center mb-6">
+                      <h3 className="text-xl font-black">Data Pengurus OSIS ({appData.pengurusList.length})</h3>
+                      <button
+                        onClick={() => {
+                          const newM = {
+                            id: Date.now(),
+                            nama: 'Siswa Baru',
+                            kelas: 'XI RPL 1',
+                            sekbidCode: 'SEKBID 01',
+                            jabatan: 'Anggota Sekbid',
+                            foto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
+                            quote: 'Semangat belajar dan berkontribusi.',
+                            instagram: '@siswa'
+                          };
+                          setAppData({ ...appData, pengurusList: [newM, ...appData.pengurusList] });
+                          showNotification('Pengurus baru ditambahkan!');
+                        }}
+                        className="bg-electric text-lime font-black text-xs px-4 py-2 rounded-xl"
+                      >
+                        + Tambah Pengurus
+                      </button>
+                    </div>
+
+                    <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+                      {appData.pengurusList.map(m => (
+                        <div key={m.id} className="p-3 bg-slate-50 border rounded-2xl flex items-center justify-between gap-3 text-xs">
+                          <img src={m.foto} alt="" className="w-10 h-10 rounded-xl object-cover border" />
+                          <div className="flex-1 min-w-0">
+                            <input
+                              type="text"
+                              value={m.nama}
+                              onChange={(e) => {
+                                const updated = appData.pengurusList.map(item => item.id === m.id ? { ...item, nama: e.target.value } : item);
+                                setAppData({ ...appData, pengurusList: updated });
+                              }}
+                              className="font-black text-slate-900 bg-white border p-1 rounded w-full mb-1"
+                            />
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                value={m.kelas}
+                                onChange={(e) => {
+                                  const updated = appData.pengurusList.map(item => item.id === m.id ? { ...item, kelas: e.target.value } : item);
+                                  setAppData({ ...appData, pengurusList: updated });
+                                }}
+                                className="w-24 p-1 bg-white border rounded text-[11px]"
+                              />
+                              <input
+                                type="text"
+                                value={m.sekbidCode}
+                                onChange={(e) => {
+                                  const updated = appData.pengurusList.map(item => item.id === m.id ? { ...item, sekbidCode: e.target.value } : item);
+                                  setAppData({ ...appData, pengurusList: updated });
+                                }}
+                                className="w-24 p-1 bg-white border rounded text-[11px] font-black text-electric"
+                              />
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => {
+                              const updated = appData.pengurusList.filter(item => item.id !== m.id);
+                              setAppData({ ...appData, pengurusList: updated });
+                              showNotification('Pengurus dihapus!');
+                            }}
+                            className="text-rose-600 font-black p-2 bg-rose-50 rounded-xl hover:bg-rose-500 hover:text-white"
+                          >
+                            Hapus
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Tab Proker */}
+                {adminTab === 'proker' && (
+                  <div className="bg-white rounded-[32px] p-6 sm:p-8 border-3 border-slate-950 shadow-card-overlap">
+                    <h3 className="text-xl font-black mb-4">Program Kerja</h3>
+                    <div className="space-y-3">
+                      {appData.programKerjaList.map(p => (
+                        <div key={p.id} className="p-4 bg-slate-50 border rounded-2xl flex items-center justify-between gap-4">
+                          <div>
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded bg-lime text-slate-950 uppercase">{p.status}</span>
+                            <h4 className="font-black text-sm mt-1">{p.nama}</h4>
+                            <p className="text-xs text-slate-500">{p.sekbid} • {p.tanggal}</p>
+                          </div>
+                          <select
+                            value={p.status}
+                            onChange={(e) => {
+                              const updated = appData.programKerjaList.map(item => item.id === p.id ? { ...item, status: e.target.value } : item);
+                              setAppData({ ...appData, programKerjaList: updated });
+                              showNotification('Status proker diubah!');
+                            }}
+                            className="text-xs font-black p-2 rounded-xl border bg-white"
+                          >
+                            <option value="PLANNED">PLANNED</option>
+                            <option value="ONGOING">ONGOING</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                          </select>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Tab Aspirasi */}
+                {adminTab === 'aspirasi' && (
+                  <div className="bg-white rounded-[32px] p-6 sm:p-8 border-3 border-slate-950 shadow-card-overlap">
+                    <h3 className="text-xl font-black mb-4">Aspirasi Siswa ({appData.aspirasiList.length})</h3>
+                    <div className="space-y-3">
+                      {appData.aspirasiList.map(a => (
+                        <div key={a.id} className="p-4 bg-slate-50 border rounded-2xl flex items-center justify-between gap-3">
+                          <div>
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded bg-lime uppercase">{a.kategori}</span>
+                            <p className="text-xs font-bold text-slate-800 italic mt-1">“{a.pesan}”</p>
+                            <p className="text-[11px] text-slate-500 mt-1">— {a.nama} ({a.kelas})</p>
+                          </div>
+                          <select
+                            value={a.status || 'DITINDAKLANJUTI'}
+                            onChange={(e) => {
+                              const updated = appData.aspirasiList.map(item => item.id === a.id ? { ...item, status: e.target.value } : item);
+                              setAppData({ ...appData, aspirasiList: updated });
+                              showNotification('Status aspirasi diupdate!');
+                            }}
+                            className="text-xs font-black p-2 rounded-xl border bg-white"
+                          >
+                            <option value="BARU MASUK">BARU MASUK</option>
+                            <option value="DALAM KAJIAN">DALAM KAJIAN</option>
+                            <option value="DITINDAKLANJUTI">DITINDAKLANJUTI</option>
+                            <option value="SELESAI">SELESAI</option>
+                          </select>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            )}
+
+            {/* ---------------- 2. BERANDA (HOME) ---------------- */}
+            {currentPage === 'home' && (
+              <div className="pt-24 pb-20">
+                <section className="relative min-h-[90vh] flex flex-col justify-center px-4 sm:px-8">
+                  <div className="max-w-7xl mx-auto w-full z-10">
+                    
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+                      <div className="inline-flex items-center gap-2 bg-white/90 px-4 py-1.5 rounded-full border border-slate-200 text-xs font-bold">
+                        <span className="w-2.5 h-2.5 rounded-full bg-lime border border-slate-900 animate-ping" />
+                        <span className="font-extrabold text-electric">{appData.osisInfo.singkatanSekolah}</span>
+                        <span className="text-slate-300">•</span>
+                        <span>STUDENT ORGANIZATION</span>
+                        <span className="text-slate-300">•</span>
+                        <span>{appData.osisInfo.periode}</span>
+                      </div>
+                      <div className="hidden sm:inline-flex items-center gap-2 bg-lime px-4 py-1.5 rounded-full text-xs font-black text-slate-950 shadow-sm">
+                        <span>⚡ KREATIF</span><span>•</span><span>KOLABORATIF</span><span>•</span><span>BERINTEGRITAS</span>
+                      </div>
+                    </div>
+
+                    <div className="relative text-center my-4">
+                      <h1 className="text-4xl sm:text-7xl md:text-8xl font-black text-slate-950 tracking-tight leading-[0.93] font-display">
+                        <span className="block text-electric">OSIS SMKN 1</span>
+                        <span className="relative inline-block mt-1">
+                          <span className="relative z-10">PURBALINGGA</span>
+                          <span className="absolute left-0 bottom-2 w-full h-4 sm:h-6 bg-lime/90 -rotate-1 rounded-sm -z-0" />
+                        </span>
+                      </h1>
+
+                      <div className="mt-6 max-w-2xl mx-auto">
+                        <div className="inline-block bg-slate-950 text-white px-6 py-2.5 rounded-full shadow-lg transform -rotate-1">
+                          <p className="text-base sm:text-xl font-black text-lime">
+                            “{appData.osisInfo.tagline}”
+                          </p>
+                        </div>
+                        <div className="mt-4 bg-white/80 border border-slate-200 rounded-2xl p-4 text-xs sm:text-sm font-bold text-slate-700 max-w-xl mx-auto">
+                          <span className="text-electric font-black uppercase mr-1">Tentang Kami:</span>
+                          {appData.osisInfo.tentangSingkat}
+                        </div>
+                        <div className="mt-6 flex flex-wrap justify-center gap-3">
+                          <button
+                            onClick={() => navigateTo('tentang')}
+                            className="bg-electric text-lime font-black text-xs sm:text-sm px-6 py-3.5 rounded-full border-2 border-slate-950 shadow-pop hover:scale-105 transition-all"
+                          >
+                            KENALI OSIS →
+                          </button>
+                          <button
+                            onClick={() => navigateTo('agenda')}
+                            className="bg-lime text-slate-950 font-black text-xs sm:text-sm px-6 py-3.5 rounded-full border-2 border-slate-950 shadow-lime-glow hover:scale-105 transition-all"
+                          >
+                            LIHAT KEGIATAN 📅
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* STATISTIK DI HALAMAN UTAMA */}
+                    <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                      {[
+                        { num: appData.pengurusList.length, label: "PENGURUS", page: "pengurus", bg: "bg-white text-slate-950" },
+                        { num: "10", label: "SEKBID", page: "pengurus", bg: "bg-lime text-slate-950" },
+                        { num: "∞", label: "IDE", page: "program", bg: "bg-electric text-white" },
+                        { num: "1", label: "FAMILY", page: "tentang", bg: "bg-slate-950 text-white" },
+                      ].map(st => (
+                        <div
+                          key={st.label}
+                          onClick={() => navigateTo(st.page)}
+                          className={`${st.bg} rounded-3xl p-5 border-2 border-slate-900 shadow-card-overlap hover:scale-105 transition-all cursor-pointer`}
+                        >
+                          <div className="text-3xl sm:text-4xl font-black">{st.num}</div>
+                          <div className="text-xs font-black tracking-wider uppercase mt-1">{st.label}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                  </div>
+                </section>
+
+                {/* MARQUEE */}
+                <div className="relative py-4 bg-electric border-y-2 border-slate-950 overflow-hidden transform -rotate-1 select-none my-8 shadow-lg">
+                  <div className="animate-marquee">
+                    {["OSIS SMEGA", "CREATE", "COLLABORATE", "CONTRIBUTE", "OSIS SMEGA", "CREATE", "COLLABORATE", "CONTRIBUTE"].map((m, i) => (
+                      <div key={i} className="flex items-center gap-6 px-4">
+                        <span className="text-xl sm:text-2xl font-black tracking-wider text-lime">{m}</span>
+                        <span className="text-white text-lg">✦</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* QUICK PORTAL JUMP */}
+                <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8">
+                  <h3 className="text-2xl font-black text-slate-950 mb-6">Pilih Halaman Portal</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    {navList.filter(n => n.id !== 'home').map(n => (
+                      <button
+                        key={n.id}
+                        onClick={() => navigateTo(n.id)}
+                        className="bg-white rounded-3xl p-6 border-2 border-slate-900 shadow-card-overlap hover:bg-electric hover:text-white transition-all text-left flex justify-between items-center group"
+                      >
+                        <span className="font-black text-sm">{n.label}</span>
+                        <span className="text-electric group-hover:text-lime font-bold">→</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ---------------- 3. TENTANG ---------------- */}
+            {currentPage === 'tentang' && (
+              <div className="pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto">
+                <span className="bg-electric text-lime font-black text-xs px-3.5 py-1.5 rounded-full uppercase">PROFIL ORGANISASI</span>
+                <h1 className="text-4xl sm:text-6xl font-black text-slate-950 mt-3">Tentang OSIS SMKN 1 Purbalingga</h1>
+                <p className="text-xs sm:text-sm font-semibold text-slate-600 mt-2 max-w-3xl leading-relaxed">{appData.osisInfo.tentangLengkap}</p>
+
+                <div className="mt-12">
+                  <h3 className="text-2xl font-black text-slate-950 mb-6">Nilai Utama</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {appData.osisInfo.nilaiUtama.map((val, idx) => (
+                      <div key={val.title} className="bg-white rounded-3xl p-6 border-2 border-slate-900 shadow-card-overlap">
+                        <span className="bg-lime text-slate-950 font-black text-xs px-2.5 py-1 rounded-full">0{idx+1}</span>
+                        <h4 className="font-black text-lg mt-3">{val.title}</h4>
+                        <p className="text-xs font-semibold text-slate-600 mt-1">{val.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="bg-slate-950 text-white rounded-[36px] p-8 border-3 border-slate-950">
+                    <span className="bg-lime text-slate-950 font-black text-xs px-3 py-1 rounded-full uppercase">VISION</span>
+                    <h3 className="text-2xl font-black mt-4 leading-snug">{appData.osisInfo.visi}</h3>
+                  </div>
+                  <div className="bg-white rounded-[36px] p-8 border-3 border-slate-950 shadow-card-overlap">
+                    <span className="bg-electric text-lime font-black text-xs px-3 py-1 rounded-full uppercase">MISSION</span>
+                    <div className="mt-4 space-y-2.5">
+                      {appData.osisInfo.misi.map((m, i) => (
+                        <p key={i} className="text-xs sm:text-sm font-bold text-slate-800 flex items-start gap-2">
+                          <span className="w-5 h-5 rounded-full bg-lime text-slate-950 flex items-center justify-center font-black text-xs flex-shrink-0">{i+1}</span>
+                          <span>{m}</span>
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ---------------- 4. PENGURUS ---------------- */}
+            {currentPage === 'pengurus' && (
+              <div className="pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto">
+                <span className="bg-electric text-lime font-black text-xs px-3.5 py-1.5 rounded-full uppercase">PENGURUS OSIS</span>
+                <h1 className="text-4xl sm:text-6xl font-black text-slate-950 mt-3">MEET THE TEAM</h1>
+                <p className="text-sm font-extrabold text-electric mt-1">{appData.pengurusList.length} students. One organization. One purpose.</p>
+
+                <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {appData.pengurusList.map(m => (
+                    <div
+                      key={m.id}
+                      onClick={() => setSelectedMember(m)}
+                      className="bg-white rounded-3xl p-5 border-2 border-slate-900 shadow-card-overlap hover:scale-105 transition-all cursor-pointer flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="bg-lime text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full border border-slate-900">{m.sekbidCode}</span>
+                          <span className="bg-slate-100 text-slate-800 font-bold text-[10px] px-2 py-0.5 rounded">{m.kelas}</span>
+                        </div>
+                        <div className="aspect-[4/5] rounded-2xl overflow-hidden border border-slate-200 mb-3 bg-slate-100">
+                          <img src={m.foto} alt="" className="w-full h-full object-cover" />
+                        </div>
+                        <h4 className="font-black text-slate-950 text-base leading-snug line-clamp-1">{m.nama}</h4>
+                        <p className="text-xs font-black text-electric mt-0.5 uppercase">{m.jabatan}</p>
+                        <p className="text-[11px] text-slate-500 italic mt-2 line-clamp-2">“{m.quote}”</p>
+                      </div>
+                      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-400">
+                        <span>{m.instagram}</span>
+                        <span className="text-slate-900 font-black">Detail →</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ---------------- 5. PROGRAM ---------------- */}
+            {currentPage === 'program' && (
+              <div className="pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto">
+                <span className="bg-electric text-lime font-black text-xs px-3.5 py-1.5 rounded-full uppercase">PROGRAM KERJA</span>
+                <h1 className="text-4xl sm:text-6xl font-black text-slate-950 mt-3">IDE → ACTION → IMPACT</h1>
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {appData.programKerjaList.map(p => (
+                    <div key={p.id} className="bg-white rounded-[36px] p-8 border-3 border-slate-950 shadow-card-overlap flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="text-xs font-black px-3.5 py-1 rounded-full border border-slate-900 bg-lime text-slate-950">{p.status}</span>
+                          <span className="text-xs font-black uppercase text-electric">{p.sekbid}</span>
+                        </div>
+                        <h3 className="text-2xl font-black leading-snug">{p.nama}</h3>
+                        <p className="text-xs sm:text-sm mt-3 font-semibold text-slate-600 leading-relaxed">{p.deskripsi}</p>
+                      </div>
+                      <div className="mt-6 pt-4 border-t border-slate-100 text-xs font-bold text-slate-600 space-y-1">
+                        <p>📅 Tanggal: {p.tanggal}</p>
+                        <p>📍 Lokasi: {p.lokasi}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ---------------- 6. AGENDA ---------------- */}
+            {currentPage === 'agenda' && (
+              <div className="pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto">
+                <span className="bg-electric text-lime font-black text-xs px-3.5 py-1.5 rounded-full uppercase">AGENDA RESMI</span>
+                <h1 className="text-4xl sm:text-6xl font-black text-slate-950 mt-3">WHAT'S HAPPENING?</h1>
+                <div className="mt-10 space-y-4">
+                  {appData.agendaList.map(a => (
+                    <div key={a.id} className="bg-white rounded-3xl p-6 border-2 border-slate-900 shadow-card-overlap flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div>
+                        <span className="bg-lime text-slate-950 text-[10px] font-black px-3 py-1 rounded-full border border-slate-900 uppercase">{a.badge || a.kategori}</span>
+                        <h3 className="text-xl font-black text-slate-950 mt-2">{a.judul}</h3>
+                        <p className="text-xs font-semibold text-slate-600 mt-1">{a.deskripsi}</p>
+                      </div>
+                      <div className="text-right sm:flex-shrink-0">
+                        <span className="bg-slate-100 text-slate-900 font-black text-xs px-3 py-1 rounded-md block mb-1">📅 {a.tanggal}</span>
+                        <span className="text-xs text-slate-400 font-bold">📍 {a.lokasi}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ---------------- 7. BERITA ---------------- */}
+            {currentPage === 'berita' && (
+              <div className="pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto">
+                <span className="bg-electric text-lime font-black text-xs px-3.5 py-1.5 rounded-full uppercase">KABAR SMEGA</span>
+                <h1 className="text-4xl sm:text-6xl font-black text-slate-950 mt-3">LATEST FROM SMEGA</h1>
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {appData.beritaList.map(b => (
+                    <div key={b.id} className="bg-white rounded-3xl p-5 border-2 border-slate-900 shadow-card-overlap flex flex-col justify-between">
+                      <div>
+                        <div className="aspect-[16/10] rounded-2xl overflow-hidden border border-slate-200 mb-3">
+                          <img src={b.foto} alt="" className="w-full h-full object-cover" />
+                        </div>
+                        <span className="text-xs font-bold text-slate-400">📅 {b.tanggal}</span>
+                        <h3 className="text-lg font-black text-slate-950 mt-1 leading-snug">{b.judul}</h3>
+                        <p className="text-xs font-semibold text-slate-600 mt-2">{b.ringkasan}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ---------------- 8. GALERI ---------------- */}
+            {currentPage === 'galeri' && (
+              <div className="pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto">
+                <span className="bg-electric text-lime font-black text-xs px-3.5 py-1.5 rounded-full uppercase">DOKUMENTASI VISUAL</span>
+                <h1 className="text-4xl sm:text-6xl font-black text-slate-950 mt-3">MOMENTS WE MADE</h1>
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {appData.galeriList.map(g => (
+                    <div
+                      key={g.id}
+                      onClick={() => setSelectedImage(g)}
+                      className="bg-white rounded-3xl p-4 border-2 border-slate-900 shadow-card-overlap hover:scale-[1.02] transition-all cursor-pointer"
+                    >
+                      <div className="relative aspect-[16/11] rounded-2xl overflow-hidden">
+                        <img src={g.foto} alt="" className="w-full h-full object-cover" />
+                        <span className="absolute top-3 left-3 bg-lime text-slate-950 font-black text-xs px-3 py-1 rounded-full">{g.sticker}</span>
+                      </div>
+                      <h4 className="font-black text-base mt-3">{g.judul}</h4>
+                      <p className="text-xs text-slate-500 mt-1">{g.tanggal}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ---------------- 9. PENGUMUMAN ---------------- */}
+            {currentPage === 'pengumuman' && (
+              <div className="pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto">
+                <span className="bg-electric text-lime font-black text-xs px-3.5 py-1.5 rounded-full uppercase">PUSAT EDARAN</span>
+                <h1 className="text-4xl sm:text-6xl font-black text-slate-950 mt-3">HEY, SMEGA!</h1>
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {appData.pengumumanList.map(item => (
+                    <div key={item.id} className="bg-white rounded-3xl p-6 border-2 border-slate-900 shadow-card-overlap">
+                      <span className="bg-lime text-slate-950 font-black text-[10px] px-3 py-1 rounded-full uppercase border border-slate-900">{item.tag}</span>
+                      <h3 className="text-lg font-black mt-3 leading-snug">{item.judul}</h3>
+                      <p className="text-xs font-semibold text-slate-600 mt-2">{item.isi}</p>
+                      <span className="text-[10px] text-slate-400 font-bold block mt-4 pt-3 border-t">📅 {item.tanggal}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ---------------- 10. ASPIRASI ---------------- */}
+            {currentPage === 'aspirasi' && (
+              <div className="pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto">
+                <div className="bg-electric text-white rounded-[40px] p-8 sm:p-14 border-3 border-slate-950 shadow-2xl text-center">
+                  <span className="text-xs font-black uppercase text-lime tracking-widest block mb-2">KOTAK SUARA DIGITAL</span>
+                  <h1 className="text-4xl sm:text-6xl font-black">YOUR VOICE MATTERS.</h1>
+                  <p className="mt-3 text-sm sm:text-lg font-bold text-white/90 max-w-lg mx-auto">
+                    Punya ide? Ada kritik? Atau punya sesuatu yang ingin kamu sampaikan?
+                  </p>
+                  <button
+                    onClick={() => setIsAspirasiModalOpen(true)}
+                    className="mt-6 bg-lime text-slate-950 font-black text-base px-8 py-4 rounded-full border-2 border-slate-950 shadow-lime-glow hover:scale-105 transition-all"
+                  >
+                    Kirim Aspirasi →
+                  </button>
+                </div>
+
+                <div className="mt-14">
+                  <h3 className="text-2xl font-black text-slate-950 mb-6">Suara Siswa Masuk</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {appData.aspirasiList.map(item => (
+                      <div key={item.id} className="bg-white rounded-3xl p-6 border-2 border-slate-900 shadow-card-overlap">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="bg-lime text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full border">{item.kategori}</span>
+                          <span className="text-[10px] text-electric font-black">{item.status || 'DITINDAKLANJUTI'}</span>
+                        </div>
+                        <p className="text-xs sm:text-sm font-bold text-slate-800 italic mt-3">“{item.pesan}”</p>
+                        <p className="text-xs font-semibold text-slate-500 mt-3">— {item.nama} ({item.kelas})</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ---------------- 11. KONTAK ---------------- */}
+            {currentPage === 'kontak' && (
+              <div className="pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto">
+                <span className="bg-electric text-lime font-black text-xs px-3.5 py-1.5 rounded-full uppercase">PUSAT HUBUNGAN</span>
+                <h1 className="text-4xl sm:text-6xl font-black text-slate-950 mt-3">LET'S CONNECT</h1>
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="bg-slate-950 text-white rounded-[36px] p-8 border-3 border-slate-950">
+                    <span className="bg-lime text-slate-950 text-xs font-black px-3 py-1 rounded-full uppercase">SEKRETARIAT</span>
+                    <h3 className="text-2xl font-black mt-4">OSIS {appData.osisInfo.namaSekolah}</h3>
+                    <div className="mt-6 space-y-3 text-xs sm:text-sm text-slate-300">
+                      <p>📍 <strong>Alamat:</strong> {appData.osisInfo.alamat}</p>
+                      <p>📞 <strong>WhatsApp:</strong> {appData.osisInfo.kontak.whatsapp}</p>
+                      <p>✉️ <strong>Email:</strong> {appData.osisInfo.kontak.email}</p>
+                      <p>🌐 <strong>Website:</strong> <a href={appData.osisInfo.kontak.websiteSekolah} className="text-lime">{appData.osisInfo.kontak.websiteSekolah}</a></p>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-[36px] p-8 border-3 border-slate-950 shadow-card-overlap">
+                    <h3 className="text-2xl font-black text-slate-950">Media Sosial Resmi</h3>
+                    <div className="mt-6 space-y-3">
+                      <a href="https://instagram.com" target="_blank" className="block p-3 rounded-2xl bg-slate-50 border font-bold text-xs text-slate-800">
+                        📸 Instagram: {appData.osisInfo.kontak.instagram}
+                      </a>
+                      <a href={appData.osisInfo.kontak.websiteSekolah} target="_blank" className="block p-3 rounded-2xl bg-slate-50 border font-bold text-xs text-slate-800">
+                        🌐 Website Sekolah: smkn1purbalingga.sch.id
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          </main>
+
+          {/* FOOTER */}
+          <footer className="bg-slate-950 text-white pt-16 pb-10 px-4 sm:px-8 border-t-3 border-slate-900 mt-12">
+            <div className="max-w-7xl mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-12 border-b border-white/10">
+                <div className="lg:col-span-5">
+                  <h3 className="text-xl font-black">OSIS {appData.osisInfo.namaSekolah}</h3>
+                  <p className="text-xs text-lime font-bold">{appData.osisInfo.namaKabinet} • {appData.osisInfo.periode}</p>
+                  <p className="text-xs text-slate-400 mt-2 max-w-sm">“{appData.osisInfo.tagline}” — Dahulu SMEA Negeri Purbalingga.</p>
+                </div>
+                <div className="lg:col-span-3">
+                  <h4 className="text-xs font-black uppercase text-lime mb-3">PORTAL MENU</h4>
+                  <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-300">
+                    {navList.map(n => (
+                      <button key={n.id} onClick={() => navigateTo(n.id)} className="text-left hover:text-lime">{n.label}</button>
+                    ))}
+                    <button onClick={() => navigateTo('admin')} className="text-left text-lime font-black">⚙️ ADMIN</button>
+                  </div>
+                </div>
+                <div className="lg:col-span-4 bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-slate-300">
+                  <h4 className="font-black text-lime uppercase mb-1">LOKASI</h4>
+                  <p>{appData.osisInfo.alamat}</p>
+                  <p className="mt-2">WhatsApp: {appData.osisInfo.kontak.whatsapp}</p>
+                </div>
+              </div>
+              <div className="pt-6 text-center text-xs text-slate-500 font-bold">
+                © 2026/2027 OSIS SMKN 1 Purbalingga (SMEGA). Hak cipta dilindungi.
+              </div>
+            </div>
+          </footer>
+
+          {/* MODAL ASPIRASI */}
+          {isAspirasiModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md" onClick={() => setIsAspirasiModalOpen(false)}>
+              <div className="relative w-full max-w-lg bg-white rounded-[36px] border-3 border-slate-950 p-6 sm:p-8" onClick={e => e.stopPropagation()}>
+                <button onClick={() => setIsAspirasiModalOpen(false)} className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 font-bold">✕</button>
+                <span className="bg-lime text-slate-950 text-xs font-black px-3 py-1 rounded-full border border-slate-950">FORM ASPIRASI SISWA</span>
+                <h3 className="text-2xl font-black text-slate-950 mt-2">Suaramu, Perubahan SMEGA.</h3>
+                
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  const form = e.target;
+                  const newPost = {
+                    id: Date.now(),
+                    nama: form.nama.value || "Siswa SMEGA (Anonim)",
+                    kelas: form.kelas.value,
+                    kategori: form.kategori.value,
+                    pesan: form.pesan.value,
+                    likes: 1,
+                    status: "BARU MASUK",
+                    waktu: "Baru saja"
+                  };
+                  setAppData({ ...appData, aspirasiList: [newPost, ...appData.aspirasiList] });
+                  setIsAspirasiModalOpen(false);
+                  alert("Aspirasi berhasil dikirim! Terima kasih sudah ikut berkontribusi untuk SMEGA.");
+                }} className="mt-4 space-y-3">
+                  <div>
+                    <label className="block text-xs font-black uppercase text-slate-900 mb-1">Kategori</label>
+                    <select name="kategori" className="w-full text-xs font-bold p-2.5 rounded-xl border-2 border-slate-900 bg-white">
+                      <option>IDE</option>
+                      <option>SARAN</option>
+                      <option>KRITIK</option>
+                      <option>KEGIATAN</option>
+                    </select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-black uppercase text-slate-900 mb-1">Nama (Opsional)</label>
+                      <input name="nama" type="text" placeholder="Bisa dikosongkan" className="w-full text-xs font-bold p-2.5 rounded-xl border-2 border-slate-900" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-black uppercase text-slate-900 mb-1">Kelas</label>
+                      <input name="kelas" required type="text" placeholder="Contoh: XI RPL 2" className="w-full text-xs font-bold p-2.5 rounded-xl border-2 border-slate-900" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black uppercase text-slate-900 mb-1">Isi Aspirasi</label>
+                    <textarea name="pesan" required rows={3} placeholder="Tuliskan ide atau saranmu..." className="w-full text-xs font-bold p-3 rounded-xl border-2 border-slate-900 resize-none" />
+                  </div>
+                  <button type="submit" className="w-full bg-electric text-lime font-black text-sm py-3.5 rounded-xl border-2 border-slate-950 shadow-pop">
+                    KIRIM ASPIRASI SEKARANG →
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* Member Modal */}
+          {selectedMember && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md" onClick={() => setSelectedMember(null)}>
+              <div className="relative w-full max-w-lg bg-white rounded-[36px] border-3 border-slate-950 p-6 sm:p-8" onClick={e => e.stopPropagation()}>
+                <button onClick={() => setSelectedMember(null)} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 font-bold">✕</button>
+                <div className="flex gap-4 items-center">
+                  <div className="w-24 h-28 rounded-2xl overflow-hidden border-2 border-slate-950 bg-slate-100 flex-shrink-0">
+                    <img src={selectedMember.foto} alt="" className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <span className="bg-lime text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full border">{selectedMember.sekbidCode}</span>
+                    <h3 className="text-xl font-black text-slate-950 mt-1">{selectedMember.nama}</h3>
+                    <p className="text-xs font-black text-electric uppercase">{selectedMember.jabatan} • {selectedMember.kelas}</p>
+                  </div>
+                </div>
+                <div className="mt-4 bg-slate-50 rounded-2xl p-3 border text-xs italic font-bold text-slate-800">
+                  “{selectedMember.quote}”
+                </div>
+                <div className="mt-6 flex justify-end">
+                  <button onClick={() => setSelectedMember(null)} className="bg-slate-950 text-lime font-black text-xs px-4 py-2 rounded-xl">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Change Password Modal */}
+          {isChangePassOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md" onClick={() => setIsChangePassOpen(false)}>
+              <div className="relative w-full max-w-md bg-white rounded-[36px] border-3 border-slate-950 p-6 sm:p-8" onClick={e => e.stopPropagation()}>
+                <button onClick={() => setIsChangePassOpen(false)} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 font-bold hover:bg-slate-200">✕</button>
+                <span className="bg-lime text-slate-950 text-[10px] font-black px-3 py-1 rounded-full border border-slate-950 uppercase">KEAMANAN AKUN</span>
+                <h3 className="text-2xl font-black text-slate-950 mt-2">Ganti Kata Sandi Admin</h3>
+                <p className="text-xs text-slate-500 font-semibold mt-1">Perubahan akan langsung disimpan ke database IndexedDB.</p>
+
+                {passError && (
+                  <div className="mt-3 p-3 rounded-xl bg-rose-50 border border-rose-400 text-rose-700 text-xs font-bold">
+                    {passError}
+                  </div>
+                )}
+
+                <form onSubmit={handlePasswordChangeSubmit} className="mt-4 space-y-3">
+                  <div>
+                    <label className="block text-[11px] font-black uppercase text-slate-800 mb-1">Kata Sandi Lama</label>
+                    <input
+                      type="password"
+                      required
+                      value={oldPassInput}
+                      onChange={e => setOldPassInput(e.target.value)}
+                      placeholder="Masukkan kata sandi lama"
+                      className="w-full text-xs font-bold p-3 rounded-xl border-2 border-slate-900 bg-slate-50"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-black uppercase text-slate-800 mb-1">Kata Sandi Baru (Min. 6 Karakter)</label>
+                    <input
+                      type="password"
+                      required
+                      value={newPassInput}
+                      onChange={e => setNewPassInput(e.target.value)}
+                      placeholder="Masukkan kata sandi baru"
+                      className="w-full text-xs font-bold p-3 rounded-xl border-2 border-slate-900 bg-slate-50"
+                    />
+                  </div>
+                  <div className="flex justify-end gap-2 pt-3">
+                    <button
+                      type="button"
+                      onClick={() => setIsChangePassOpen(false)}
+                      className="bg-slate-100 text-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl hover:bg-slate-200"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-electric text-lime font-black text-xs px-5 py-2.5 rounded-xl border-2 border-slate-900 shadow-pop"
+                    >
+                      Simpan ke Database ✓
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
